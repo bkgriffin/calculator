@@ -18,6 +18,20 @@ function divide(a, b) {
     return a / b;
 }
 
+// Perform a calculator operation on two numbers.
+function operate(operator, a, b) { 
+    switch(operator) { 
+        case '+':
+            return add(a, b);
+        case '-':
+            return subtract(a, b);
+        case '*':
+            return multiply(a, b);
+        case '/':
+            return divide(a, b);
+    }
+}
+
 // Testing add()
 console.log('------------------ TESTING add() ------------------');
 console.log('4 + 5 = ' + add(4,5) + ' (Expected Value: 9)');
@@ -56,4 +70,12 @@ console.log('-3 / 4 = ' + divide(-4,4) + ' (Expected Value: -1)');
 console.log('0 / -5 = ' + divide(0,-5) + ' (Expected Value: 0)');
 console.log('0 / 0 = ' + divide(0,0) + ' (Expected Value: NaN)');
 console.log('0 / -5 = ' + divide(1,3) + ' (Expected Value: 0.33)');
+console.log('---------------------------------------------------');
+
+// Testing operate()
+console.log('---------------- TESTING operate() ---------------');
+console.log('4 + 8 = ' + operate('+',4,8) + ' (Expected Value: 12)');
+console.log('0 - 5 = ' + operate('-',0,5) + ' (Expected Value: -5)');
+console.log('-3 * 4 = ' + operate('*',-4,3) + ' (Expected Value: -12)');
+console.log('0 / -5 = ' + operate('/',0,-5) + ' (Expected Value: 0)');
 console.log('---------------------------------------------------');
