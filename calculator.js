@@ -1,3 +1,7 @@
+// Variables to store each part of the calculator operation.
+// i.e. 7 + 5 => [firstNumber] [operator] [secondNumber]
+let firstNumber, secondNumber, operator;
+
 // Add two numbers together.
 function add(a, b) { 
     return a + b;
