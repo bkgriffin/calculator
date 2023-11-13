@@ -1,6 +1,6 @@
 // Variables to store each part of the calculator operation.
 // i.e. 7 + 5 => [firstNumber] [operator] [secondNumber]
-let firstNumber, secondNumber, operator;
+let firstNumber = null, secondNumber = null, operator = null;
 
 // Add two numbers together.
 function add(a, b) { 
@@ -29,57 +29,96 @@ function operate(operator, a, b) {
             return add(a, b);
         case '-':
             return subtract(a, b);
-        case '*':
+        case 'x':
             return multiply(a, b);
-        case '/':
+        case '÷':
             return divide(a, b);
     }
 }
 
-// Testing add()
-console.log('------------------ TESTING add() ------------------');
-console.log('4 + 5 = ' + add(4,5) + ' (Expected Value: 9)');
-console.log('0 + 5 = ' + add(0,5) + ' (Expected Value: 5)');
-console.log('-3 + 4 = ' + add(-3,4) + ' (Expected Value: 1)');
-console.log('-4 + -5 = ' + add(-4,-5) + ' (Expected Value: -9)');
-console.log('0 + 0 = ' + add(0,0) + ' (Expected Value: 0)');
-console.log('0 + -5 = ' + add(0,-5) + ' (Expected Value: -5)');
-console.log('---------------------------------------------------');
+// Add event listeners for the calculator buttons.
+function addButtonEventListeners() {
+    const calculatorButtons = document.querySelectorAll(".calculator-button");
+    calculatorButtons.forEach(calculatorButton => calculatorButton.addEventListener('click', function() { calculatorButtonClicked(calculatorButton.textContent) }));
+}
 
-// Testing subtract()
-console.log('---------------- TESTING subtract() ---------------');
-console.log('4 - 5 = ' + subtract(4,5) + ' (Expected Value: -1)');
-console.log('0 - 5 = ' + subtract(0,5) + ' (Expected Value: -5)');
-console.log('-3 - 4 = ' + subtract(-3,4) + ' (Expected Value: -7)');
-console.log('-4 - -5 = ' + subtract(-4,-5) + ' (Expected Value: 1)');
-console.log('0 - 0 = ' + subtract(0,0) + ' (Expected Value: 0)');
-console.log('0 - -5 = ' + subtract(0,-5) + ' (Expected Value: 5)');
-console.log('---------------------------------------------------');
+// Perform an operation when a calculator button is clicked.
+function calculatorButtonClicked(val) { 
+    switch(val)
+    {
+        case 'AC':
+            clear();
+            populateDisplay('', false);
+            break;
+        case '÷': 
+        case 'x':
+        case '-': 
+        case '+':
+            // Evaluate a previous expression before another operator is called.
+            if(operator !== null) {
+                calculatorButtonClicked('=');
+                calculatorButtonClicked(val);
+            }
+            else {
+                storeOperator(val);
+                populateDisplay(val, true);
+            }
+            break;
+        case '=':
+            let operationResult = operate(operator, Number(firstNumber), Number(secondNumber));
+            equals(operationResult);
+            populateDisplay(operationResult, false);
+            break;
+        case '.':
+        default: 
+            storeValue(val);
+            populateDisplay(val, true);
+            break;
+    }
+}
 
-// Testing multiply()
-console.log('---------------- TESTING multiply() ---------------');
-console.log('4 * 5 = ' + multiply(4,5) + ' (Expected Value: 20)');
-console.log('0 * 5 = ' + multiply(0,5) + ' (Expected Value: 0)');
-console.log('-3 * 4 = ' + multiply(-3,4) + ' (Expected Value: -12)');
-console.log('-4 * -5 = ' + multiply(-4,-5) + ' (Expected Value: 20)');
-console.log('0 * 0 = ' + multiply(0,0) + ' (Expected Value: 0)');
-console.log('0 * -5 = ' + multiply(0,-5) + ' (Expected Value: 0)');
-console.log('---------------------------------------------------');
+// Populate the display when a calculator button is clicked.
+function populateDisplay(val, isAppended) { 
+    const displayLabel = document.querySelector(".display-label");
+    if(isAppended)
+        displayLabel.textContent += val;
+    else
+        displayLabel.textContent = val;
+}
 
-// Testing divide()
-console.log('---------------- TESTING divide() ---------------');
-console.log('4 / 8 = ' + divide(4,8) + ' (Expected Value: 0.5)');
-console.log('0 / 5 = ' + divide(12,3) + ' (Expected Value: 4)');
-console.log('-3 / 4 = ' + divide(-4,4) + ' (Expected Value: -1)');
-console.log('0 / -5 = ' + divide(0,-5) + ' (Expected Value: 0)');
-console.log('0 / 0 = ' + divide(0,0) + ' (Expected Value: NaN)');
-console.log('0 / -5 = ' + divide(1,3) + ' (Expected Value: 0.33)');
-console.log('---------------------------------------------------');
+// Clear the stored values.
+function clear() {
+    firstNumber = null;
+    secondNumber = null;
+    operator = null;
+}
 
-// Testing operate()
-console.log('---------------- TESTING operate() ---------------');
-console.log('4 + 8 = ' + operate('+',4,8) + ' (Expected Value: 12)');
-console.log('0 - 5 = ' + operate('-',0,5) + ' (Expected Value: -5)');
-console.log('-3 * 4 = ' + operate('*',-4,3) + ' (Expected Value: -12)');
-console.log('0 / -5 = ' + operate('/',0,-5) + ' (Expected Value: 0)');
-console.log('---------------------------------------------------');
+// Store the operation result and clear the remaining values.
+function equals(val) { 
+    firstNumber = val;
+    secondNumber = null;
+    operator = null;
+}
+
+// Store the operator being used.
+function storeOperator(val) { 
+    operator = val;
+}
+
+// Store the numerical value being used.
+function storeValue(val) { 
+    if(operator === null) {  
+        if(firstNumber === null)
+            firstNumber = val;
+        else
+            firstNumber += val;
+    }
+    else {
+        if(secondNumber === null)
+            secondNumber = val;
+        else
+            secondNumber += val;
+    }
+}
+
+addButtonEventListeners();
